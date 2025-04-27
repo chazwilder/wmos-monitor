@@ -4,7 +4,7 @@ SQLite storage module for tracking object history, changes, and source code
 
 import sqlite3
 import datetime
-from wmos_tracker.utils.logger import logger
+from utils.logger import logger
 
 
 class SQLiteStore:

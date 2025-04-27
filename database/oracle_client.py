@@ -3,7 +3,7 @@ Oracle database client module for connecting to and querying Oracle databases
 """
 
 import datetime
-from wmos_tracker.utils.logger import logger
+from utils.logger import logger
 
 try:
     import cx_Oracle
