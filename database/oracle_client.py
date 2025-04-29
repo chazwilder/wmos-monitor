@@ -2,7 +2,6 @@
 Oracle database client module for connecting to and querying Oracle databases
 """
 
-import datetime
 from utils.logger import logger
 
 try:

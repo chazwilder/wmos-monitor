@@ -4,7 +4,6 @@ Core tracking functionality for the WMOS database change tracker
 
 import os
 import datetime
-from pathlib import Path
 
 from database.oracle_client import OracleClient
 from database.sqlite_store import SQLiteStore

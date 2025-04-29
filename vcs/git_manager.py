@@ -6,7 +6,6 @@ import os
 import re
 import subprocess
 import datetime
-from pathlib import Path
 
 from utils.logger import logger
 
