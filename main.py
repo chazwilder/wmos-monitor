@@ -144,6 +144,8 @@ def main():
     config_file = args.config if args.config else None
     config = load_config(config_file)
 
+    print("config loaded")
+
     # Check if send-summary is specified
     if args.send_summary:
         logger.info("Sending daily summary...")

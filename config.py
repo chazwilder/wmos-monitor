@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
-def load_config(env_file='.env'):
+def load_config(env_file='.env.dev'):
     """
-    Load configuration from environment variables, with .env file support
+    Load configuration from environment variables, with .env.dev file support
     Returns a dictionary with all configuration values
     """
     load_dotenv(env_file)
@@ -35,7 +35,20 @@ def load_config(env_file='.env'):
 
     if not webhook_url:
         logger.error("Missing required configuration: POWER_AUTOMATE_WEBHOOK")
-
+    print( {
+        'CONNECTION_STRING': db_connection,
+        'OBJECT_PREFIX': object_prefix,
+        'DB_FILE': db_file,
+        'OUTPUT_DIR': output_dir,
+        'POWER_AUTOMATE_WEBHOOK': webhook_url,
+        'CODE_DIR': code_dir,
+        'GIT_REPO_PATH': git_repo_path,
+        'DEVOPS_REPO_URL': devops_repo_url,
+        'SCAN_INTERVAL': scan_interval,
+        'DAILY_NOTIFICATION_HOUR': daily_notification_hour,
+        'DAYS_LOOKBACK': days_lookback,
+        'ENV_TYPE': env_type
+    })
     return {
         'CONNECTION_STRING': db_connection,
         'OBJECT_PREFIX': object_prefix,
