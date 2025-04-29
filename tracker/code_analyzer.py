@@ -30,12 +30,24 @@ class CodeAnalyzer:
 
         code = code.replace("\r\n", "\n")  # Normalize line endings
 
+        # Preserve original code for diffing
         clean_code = code
 
         # Create a normalized version for hashing
         # Remove SQL comments (both -- and /* */ style)
         normalized = re.sub(r"/\*[\s\S]*?\*/", " ", code)
         normalized = re.sub(r"--.*$", " ", normalized, flags=re.MULTILINE)
+
+        # Check for common SQL object definitions and ensure consistent prefixes
+        obj_types = ["PROCEDURE", "FUNCTION", "TRIGGER", "VIEW", "PACKAGE", "PACKAGE BODY", "TYPE", "TYPE BODY"]
+        for obj_type in obj_types:
+            # If the code contains the object type but doesn't have CREATE OR REPLACE prefix
+            pattern = rf"^\s*({obj_type}\s+\w+)"
+            if re.search(pattern, normalized, re.IGNORECASE | re.MULTILINE):
+                if not re.search(rf"CREATE\s+OR\s+REPLACE\s+{obj_type}", normalized, re.IGNORECASE):
+                    # Add the prefix for consistent normalization
+                    normalized = re.sub(pattern, f"CREATE OR REPLACE \\1", normalized, flags=re.IGNORECASE | re.MULTILINE)
+
         normalized = " ".join(normalized.split())
         normalized = normalized.upper()
         normalized = re.sub(r'"[A-Z0-9_]+"\.(".*?")', r"\1", normalized)
