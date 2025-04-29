@@ -174,3 +174,24 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Output directories
+/change_reports/
+change_reports/
+/output/
+output/
+
+# Log files
+/logs/
+logs/
+*.log
+
+# Database code directories
+/code/
+code/
+**/code/
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3

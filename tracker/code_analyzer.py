@@ -106,7 +106,7 @@ class CodeAnalyzer:
     @staticmethod
     def save_to_filesystem(base_dir, schema, object_name, object_type, source_code):
         """
-        Save raw source code to filesystem with directory pattern
+        Save raw source code to filesystem with directory pattern and ensure CREATE OR REPLACE prefix
 
         Args:
             base_dir (str): Base directory to save files
@@ -120,6 +120,14 @@ class CodeAnalyzer:
         """
         if not source_code:
             return None
+
+        # Add CREATE OR REPLACE prefix if needed
+        if object_type in ["PROCEDURE", "FUNCTION", "TRIGGER", "VIEW", "PACKAGE", "PACKAGE BODY", "TYPE", "TYPE BODY"]:
+            # Check if it already has CREATE OR REPLACE
+            if not re.search(rf"CREATE\s+OR\s+REPLACE\s+{object_type}", source_code, re.IGNORECASE):
+                # Add the prefix
+                pattern = rf"^\s*({object_type}\s+\w+)"
+                source_code = re.sub(pattern, f"CREATE OR REPLACE \\1", source_code, flags=re.IGNORECASE | re.MULTILINE)
 
         schema_dir = os.path.join(base_dir, schema)
         os.makedirs(schema_dir, exist_ok=True)

@@ -138,7 +138,7 @@ class GitManager:
 
     def save_file(self, schema, object_name, object_type, source_code):
         """
-        Save raw source code to git repository
+        Save raw source code to git repository with CREATE OR REPLACE prefix
 
         Args:
             schema (str): Schema name
@@ -151,6 +151,14 @@ class GitManager:
         """
         if not source_code:
             return None
+
+        # Add CREATE OR REPLACE prefix if needed
+        if object_type in ["PROCEDURE", "FUNCTION", "TRIGGER", "VIEW", "PACKAGE", "PACKAGE BODY", "TYPE", "TYPE BODY"]:
+            # Check if it already has CREATE OR REPLACE
+            if not re.search(rf"CREATE\s+OR\s+REPLACE\s+{object_type}", source_code, re.IGNORECASE):
+                # Add the prefix
+                pattern = rf"^\s*({object_type}\s+\w+)"
+                source_code = re.sub(pattern, f"CREATE OR REPLACE \\1", source_code, flags=re.IGNORECASE | re.MULTILINE)
 
         # Create schema directory
         schema_dir = os.path.join(self.repo_path, schema)
