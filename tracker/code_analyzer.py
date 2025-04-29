@@ -52,7 +52,7 @@ class CodeAnalyzer:
         normalized = re.sub(r'"[A-Z0-9_]+"\.(".*?")', r"\1", normalized)
         normalized = re.sub(r"\s+$", "", normalized)
 
-        return clean_code, normalized
+        return normalized, normalized
 
     @staticmethod
     def hash_code(normalized_code):
