@@ -35,20 +35,7 @@ def load_config(env_file='.env.dev'):
 
     if not webhook_url:
         logger.error("Missing required configuration: POWER_AUTOMATE_WEBHOOK")
-    print( {
-        'CONNECTION_STRING': db_connection,
-        'OBJECT_PREFIX': object_prefix,
-        'DB_FILE': db_file,
-        'OUTPUT_DIR': output_dir,
-        'POWER_AUTOMATE_WEBHOOK': webhook_url,
-        'CODE_DIR': code_dir,
-        'GIT_REPO_PATH': git_repo_path,
-        'DEVOPS_REPO_URL': devops_repo_url,
-        'SCAN_INTERVAL': scan_interval,
-        'DAILY_NOTIFICATION_HOUR': daily_notification_hour,
-        'DAYS_LOOKBACK': days_lookback,
-        'ENV_TYPE': env_type
-    })
+
     return {
         'CONNECTION_STRING': db_connection,
         'OBJECT_PREFIX': object_prefix,
