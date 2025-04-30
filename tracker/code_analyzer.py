@@ -47,12 +47,17 @@ class CodeAnalyzer:
                     # Add the prefix for consistent normalization
                     normalized = re.sub(pattern, f"CREATE OR REPLACE \\1", normalized, flags=re.IGNORECASE | re.MULTILINE)
 
+            if re.search(pattern, clean_code, re.IGNORECASE | re.MULTILINE):
+                if not re.search(rf"CREATE\s+OR\s+REPLACE\s+{obj_type}", clean_code, re.IGNORECASE):
+                    # Add the prefix for consistent normalization
+                    normalized = re.sub(pattern, f"CREATE OR REPLACE \\1", clean_code, flags=re.IGNORECASE | re.MULTILINE)
+
         normalized = " ".join(normalized.split())
         normalized = normalized.upper()
         normalized = re.sub(r'"[A-Z0-9_]+"\.(".*?")', r"\1", normalized)
         normalized = re.sub(r"\s+$", "", normalized)
 
-        return normalized, normalized
+        return clean_code, normalized
 
     @staticmethod
     def hash_code(normalized_code):
