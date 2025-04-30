@@ -29,7 +29,7 @@ class GitManager:
         self._init_repo()
 
     def _init_repo(self):
-        """Initialize or update the Git repository"""
+        """Initialize or update the Git repository with better conflict handling"""
         if not os.path.exists(self.repo_path):
             logger.info(f"Cloning repository to {self.repo_path}")
             try:
@@ -49,6 +49,25 @@ class GitManager:
         else:
             logger.info(f"Using existing Git repository at {self.repo_path}")
             try:
+                # Check for local changes
+                status_result = subprocess.run(
+                    ["git", "status", "--porcelain"],
+                    cwd=self.repo_path,
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+
+                if status_result.stdout.strip():
+                    # Local changes exist, stash them
+                    logger.info("Local changes detected, stashing before pull")
+                    subprocess.run(
+                        ["git", "stash"],
+                        cwd=self.repo_path,
+                        check=True,
+                        capture_output=True,
+                    )
+
                 # Pull latest changes
                 subprocess.run(
                     ["git", "pull", "origin", "main"],
@@ -57,9 +76,26 @@ class GitManager:
                     capture_output=True,
                 )
                 logger.info("Repository updated with latest changes")
+
+                # If we stashed changes, try to reapply them
+                if status_result.stdout.strip():
+                    try:
+                        logger.info("Reapplying local changes")
+                        subprocess.run(
+                            ["git", "stash", "pop"],
+                            cwd=self.repo_path,
+                            check=True,
+                            capture_output=True,
+                        )
+                    except subprocess.CalledProcessError as e:
+                        # Conflicts occurred during stash pop
+                        logger.warning(
+                            f"Conflicts occurred when reapplying local changes: {e.stderr.decode() if e.stderr else str(e)}"
+                        )
+                        logger.warning("Manual intervention may be required")
             except subprocess.CalledProcessError as e:
                 logger.warning(
-                    f"Failed to pull latest changes: {e.stderr.decode() if e.stderr else str(e)}"
+                    f"Failed to update repository: {e.stderr.decode() if e.stderr else str(e)}"
                 )
                 # Continue with the existing repo
 
